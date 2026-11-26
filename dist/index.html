@@ -68,10 +68,10 @@
       </section>
 
       <section class="benchmark-strip" aria-label="Referências usadas na comparação">
-        <p><strong>LoL atual:</strong> Diamante I · 75 LP</p>
-        <p><strong>VAL atual:</strong> Diamante 3</p>
-        <p><strong>GC atual:</strong> Nível 20</p>
-        <p><strong>Cálculo:</strong> média das 3 comparações</p>
+        <p><strong>LoL:</strong> D1 75 LP hoje · Mestre 217 LP no auge</p>
+        <p><strong>VAL:</strong> Diamante 3 hoje · Imortal 1 no auge</p>
+        <p><strong>GC:</strong> Nível 20 hoje e no auge</p>
+        <p><strong>Balanço:</strong> média contra o Subzero atual</p>
       </section>
 
       <section class="compare-section" id="comparador" aria-labelledby="compareTitle">
@@ -166,32 +166,35 @@
             <div class="comparison-list">
               <section class="comparison-item">
                 <div class="comparison-title">
-                  <div><span>League of Legends</span><h4>Você hoje <i>vs.</i> D1 75 LP</h4></div>
-                  <strong id="lolPercent">—</strong>
+                  <div><span>League of Legends</span><h4>Seu elo atual</h4></div>
+                  <div class="comparison-score"><strong id="lolPercent">—</strong><small id="lolPeakPercent">— do auge</small></div>
                 </div>
-                <div class="bar-track"><span class="bar-fill current-bar" id="lolBar"></span><i class="target-marker"><b>fr0sty</b></i></div>
-                <div class="bar-caption"><span id="playerLolCaption">Aguardando consulta</span><span>Diamante I · 75 LP</span></div>
+                <div class="bar-track"><span class="bar-fill current-bar" id="lolBar"></span><i class="reference-marker current-reference" id="lolCurrentMarker"><b>hoje</b></i><i class="reference-marker peak-reference"><b>auge</b></i></div>
+                <div class="bar-caption"><span id="playerLolCaption">Aguardando consulta</span><span>Escala até o auge</span></div>
+                <div class="reference-points"><span><b>Subzero hoje</b>D1 · 75 LP</span><span><b>Subzero auge</b>Mestre · 217 LP</span></div>
                 <p id="lolCopy">Informe o Riot ID para completar esta comparação.</p>
               </section>
 
               <section class="comparison-item">
                 <div class="comparison-title">
-                  <div><span>VALORANT</span><h4>Você hoje <i>vs.</i> Diamante 3</h4></div>
-                  <strong id="valPercent">50%</strong>
+                  <div><span>VALORANT</span><h4>Seu elo atual</h4></div>
+                  <div class="comparison-score"><strong id="valPercent">50%</strong><small id="valPeakPercent">41% do auge</small></div>
                 </div>
-                <div class="bar-track"><span class="bar-fill val-peak-bar" id="valBar"></span><i class="target-marker"><b>fr0sty</b></i></div>
-                <div class="bar-caption"><span id="playerValCaption">Prata 3</span><span>Diamante 3</span></div>
-                <p id="valCopy">Seu elo atual está a 50% da referência.</p>
+                <div class="bar-track"><span class="bar-fill val-peak-bar" id="valBar"></span><i class="reference-marker current-reference" id="valCurrentMarker"><b>hoje</b></i><i class="reference-marker peak-reference"><b>auge</b></i></div>
+                <div class="bar-caption"><span id="playerValCaption">Prata 3</span><span>Escala até o auge</span></div>
+                <div class="reference-points"><span><b>Subzero hoje</b>Diamante 3</span><span><b>Subzero auge</b>Imortal 1</span></div>
+                <p id="valCopy">50% do Subzero atual e 41% do auge.</p>
               </section>
 
               <section class="comparison-item">
                 <div class="comparison-title">
-                  <div><span>Gamers Club</span><h4>Você hoje <i>vs.</i> nível 20</h4></div>
-                  <strong id="gcPercent">50%</strong>
+                  <div><span>Gamers Club</span><h4>Seu nível atual</h4></div>
+                  <div class="comparison-score"><strong id="gcPercent">50%</strong><small id="gcPeakPercent">50% do auge</small></div>
                 </div>
-                <div class="bar-track"><span class="bar-fill gc-bar" id="gcBar"></span><i class="target-marker"><b>fr0sty</b></i></div>
-                <div class="bar-caption"><span id="playerGcCaption">Nível 10</span><span>Nível 20</span></div>
-                <p id="gcCopy">Seu nível atual representa 50% da referência.</p>
+                <div class="bar-track"><span class="bar-fill gc-bar" id="gcBar"></span><i class="reference-marker peak-reference combined-reference"><b>hoje/auge</b></i></div>
+                <div class="bar-caption"><span id="playerGcCaption">Nível 10</span><span>Escala até o auge</span></div>
+                <div class="reference-points"><span><b>Subzero hoje</b>Nível 20</span><span><b>Subzero auge</b>Nível 20</span></div>
+                <p id="gcCopy">50% do Subzero atual e do auge.</p>
               </section>
             </div>
 
@@ -214,10 +217,10 @@
           <h2 id="methodTitle">Três comparações, uma média.</h2>
         </div>
         <div class="method-grid">
-          <article><span>01</span><h3>LoL automático</h3><p>O Riot ID retorna o elo Solo/Duo atual e compara com D1, 75 LP.</p></article>
-          <article><span>02</span><h3>VAL atual</h3><p>O elo selecionado é comparado com o Diamante 3 atual do fr0sty.</p></article>
-          <article><span>03</span><h3>GC atual</h3><p>O nível informado é comparado com o nível 20 atual do fr0sty.</p></article>
-          <article><span>04</span><h3>Média geral</h3><p>A porcentagem final é a média simples das três comparações.</p></article>
+          <article><span>01</span><h3>LoL automático</h3><p>O Riot ID retorna somente seu elo Solo/Duo atual.</p></article>
+          <article><span>02</span><h3>Duas referências</h3><p>Cada jogo mostra sua distância para o Subzero de hoje e do auge.</p></article>
+          <article><span>03</span><h3>Dados atuais</h3><p>Você informa apenas o elo atual no VALORANT e o nível atual na GC.</p></article>
+          <article><span>04</span><h3>Média geral</h3><p>O balanço é a média dos três jogos contra o Subzero atual.</p></article>
         </div>
       </section>
     </main>

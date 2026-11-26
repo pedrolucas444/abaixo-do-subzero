@@ -76,7 +76,7 @@ async function lookupLol(url, env) {
   if (!env.RIOT_API_KEY) {
     return json({
       code: "RIOT_KEY_MISSING",
-      message: "A integração está pronta, mas a chave da Riot ainda não foi configurada."
+      message: "A chave oficial da Riot ainda não foi configurada no servidor."
     }, 503);
   }
 

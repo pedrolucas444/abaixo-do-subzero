@@ -19,10 +19,8 @@ const valRanks = [
 ];
 
 const reference = {
-  lolRank: "Diamante I",
-  lolLp: 75,
-  valRank: "Diamante 3",
-  gcLevel: 20
+  current: { lolRank: "Diamante I", lolLp: 75, valRank: "Diamante 3", gcLevel: 20 },
+  peak: { lolRank: "Mestre", lolLp: 217, valRank: "Imortal 1", gcLevel: 20 }
 };
 
 const defaults = {
@@ -72,11 +70,10 @@ function percentOf(score, target) {
   return Math.max(0, Math.round((score / Math.max(target, 1)) * 100));
 }
 
-function comparisonCopy(percent, label) {
-  if (percent >= 110) return `Você está ${percent - 100}% acima da referência no ${label}.`;
-  if (percent >= 100) return `Você alcançou ou superou a referência no ${label}.`;
-  if (percent >= 95) return `Praticamente o mesmo patamar no ${label}.`;
-  return `Seu nível atual representa ${percent}% da referência no ${label}.`;
+function comparisonCopy(currentPercent, peakPercent, label) {
+  const currentText = currentPercent >= 100 ? "alcançou o Subzero atual" : `está em ${currentPercent}% do Subzero atual`;
+  const peakText = peakPercent >= 100 ? "alcançou o auge" : `está em ${peakPercent}% do auge`;
+  return `No ${label}, você ${currentText} e ${peakText}.`;
 }
 
 function overallCopy(percent) {
@@ -103,15 +100,26 @@ function setBar(id, percent) {
   document.querySelector(id).style.width = `${Math.min(Math.max(percent, 0), 100)}%`;
 }
 
+function setMarker(id, percent) {
+  document.querySelector(id).style.left = `${Math.min(Math.max(percent, 0), 100)}%`;
+}
+
 function save() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(player));
 }
 
 function render() {
-  const valPercent = percentOf(valRankScore(player.valCurrent), valRankScore(reference.valRank));
-  const gcPercent = percentOf(player.gcLevel, reference.gcLevel);
+  const valScore = valRankScore(player.valCurrent);
+  const valPercent = percentOf(valScore, valRankScore(reference.current.valRank));
+  const valPeakPercent = percentOf(valScore, valRankScore(reference.peak.valRank));
+  const gcPercent = percentOf(player.gcLevel, reference.current.gcLevel);
+  const gcPeakPercent = percentOf(player.gcLevel, reference.peak.gcLevel);
+  const lolScore = player.lol ? rankScore(player.lol.rankLabel, player.lol.leaguePoints) : null;
   const lolPercent = player.lol
-    ? percentOf(rankScore(player.lol.rankLabel, player.lol.leaguePoints), rankScore(reference.lolRank, reference.lolLp))
+    ? percentOf(lolScore, rankScore(reference.current.lolRank, reference.current.lolLp))
+    : null;
+  const lolPeakPercent = player.lol
+    ? percentOf(lolScore, rankScore(reference.peak.lolRank, reference.peak.lolLp))
     : null;
 
   const fallbackName = player.riotId.includes("#") ? player.riotId.split("#")[0] : "Aguardando Riot ID";
@@ -124,17 +132,22 @@ function render() {
   document.querySelector("#resultGc").textContent = `Nível ${player.gcLevel}`;
 
   document.querySelector("#valPercent").textContent = `${valPercent}%`;
+  document.querySelector("#valPeakPercent").textContent = `${valPeakPercent}% do auge`;
   document.querySelector("#gcPercent").textContent = `${gcPercent}%`;
+  document.querySelector("#gcPeakPercent").textContent = `${gcPeakPercent}% do auge`;
   document.querySelector("#playerValCaption").textContent = player.valCurrent;
   document.querySelector("#playerGcCaption").textContent = `Nível ${player.gcLevel}`;
-  document.querySelector("#valCopy").textContent = comparisonCopy(valPercent, "VALORANT");
-  document.querySelector("#gcCopy").textContent = comparisonCopy(gcPercent, "GC");
-  setBar("#valBar", valPercent);
-  setBar("#gcBar", gcPercent);
+  document.querySelector("#valCopy").textContent = comparisonCopy(valPercent, valPeakPercent, "VALORANT");
+  document.querySelector("#gcCopy").textContent = comparisonCopy(gcPercent, gcPeakPercent, "GC");
+  setBar("#valBar", valPeakPercent);
+  setBar("#gcBar", gcPeakPercent);
+  setMarker("#valCurrentMarker", percentOf(valRankScore(reference.current.valRank), valRankScore(reference.peak.valRank)));
+  setMarker("#lolCurrentMarker", percentOf(rankScore(reference.current.lolRank, reference.current.lolLp), rankScore(reference.peak.lolRank, reference.peak.lolLp)));
 
   const status = document.querySelector("#overallStatus");
   if (lolPercent === null) {
     document.querySelector("#lolPercent").textContent = "—";
+    document.querySelector("#lolPeakPercent").textContent = "— do auge";
     document.querySelector("#playerLolCaption").textContent = "Aguardando consulta";
     document.querySelector("#lolCopy").textContent = "Informe o Riot ID para completar esta comparação.";
     setBar("#lolBar", 0);
@@ -149,9 +162,10 @@ function render() {
   const lolLabel = formatLol(player.lol);
   const average = Math.round((lolPercent + valPercent + gcPercent) / 3);
   document.querySelector("#lolPercent").textContent = `${lolPercent}%`;
+  document.querySelector("#lolPeakPercent").textContent = `${lolPeakPercent}% do auge`;
   document.querySelector("#playerLolCaption").textContent = lolLabel;
-  document.querySelector("#lolCopy").textContent = comparisonCopy(lolPercent, "LoL");
-  setBar("#lolBar", lolPercent);
+  document.querySelector("#lolCopy").textContent = comparisonCopy(lolPercent, lolPeakPercent, "LoL");
+  setBar("#lolBar", lolPeakPercent);
   document.querySelector("#overallPercent").textContent = `${average}%`;
   document.querySelector("#overallCopy").textContent = overallCopy(average);
   setBar("#overallBar", average);
@@ -197,7 +211,7 @@ async function lookupLol(force = false) {
   } catch (error) {
     player.lol = null;
     const message = error.code === "RIOT_KEY_MISSING"
-      ? "Consulta automática pronta; falta configurar a chave da Riot no servidor."
+      ? "LoL indisponível: a chave oficial da Riot ainda não foi configurada no servidor."
       : error.message;
     setLookupStatus("error", message);
     render();
