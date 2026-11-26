@@ -1,4 +1,4 @@
-const STORAGE_KEY = "abaixo-do-subzero:v2";
+const STORAGE_KEY = "abaixo-do-subzero:v5";
 
 const lolRanks = [
   "Ferro IV", "Ferro III", "Ferro II", "Ferro I",
@@ -12,31 +12,24 @@ const lolRanks = [
 ];
 
 const valRanks = [
-  "Ferro 1", "Ferro 2", "Ferro 3", "Bronze 1", "Bronze 2", "Bronze 3",
+  "Sem elo", "Ferro 1", "Ferro 2", "Ferro 3", "Bronze 1", "Bronze 2", "Bronze 3",
   "Prata 1", "Prata 2", "Prata 3", "Ouro 1", "Ouro 2", "Ouro 3",
   "Platina 1", "Platina 2", "Platina 3", "Diamante 1", "Diamante 2", "Diamante 3",
   "Ascendente 1", "Ascendente 2", "Ascendente 3", "Imortal 1", "Imortal 2", "Imortal 3", "Radiante"
 ];
 
 const reference = {
-  riotId: "fr0sty#BR4",
-  currentRank: "Diamante I",
-  currentLp: 75,
-  peakRank: "Mestre",
-  peakLp: 217,
-  valPeak: "Imortal 1"
+  lolRank: "Diamante I",
+  lolLp: 75,
+  valRank: "Diamante 3",
+  gcLevel: 20
 };
 
 const defaults = {
-  nickname: "Rival",
-  riotId: "Jogador#BR1",
-  lolCurrent: "Ouro II",
-  lolCurrentLp: 40,
-  lolPeak: "Platina III",
-  lolPeakLp: 20,
+  riotId: "",
   valCurrent: "Prata 3",
-  valPeak: "Ouro 2",
-  gcLevel: 10
+  gcLevel: 10,
+  lol: null
 };
 
 function loadPlayer() {
@@ -48,6 +41,8 @@ function loadPlayer() {
 }
 
 let player = loadPlayer();
+let lookupTimer;
+let lastLookupId = player.lol?.riotId || "";
 
 function fillSelect(select, options, selected) {
   select.replaceChildren(...options.map((label) => {
@@ -60,6 +55,7 @@ function fillSelect(select, options, selected) {
 }
 
 function rankScore(rank, lp) {
+  if (!rank || rank === "Sem elo") return 0;
   const numericLp = Math.max(0, Number(lp) || 0);
   if (rank === "Mestre") return 2800 + numericLp;
   if (rank === "Grão-Mestre") return 4000 + numericLp;
@@ -68,88 +64,156 @@ function rankScore(rank, lp) {
   return index * 100 + Math.min(numericLp, 99);
 }
 
+function valRankScore(rank) {
+  return Math.max(0, valRanks.indexOf(rank));
+}
+
 function percentOf(score, target) {
   return Math.max(0, Math.round((score / Math.max(target, 1)) * 100));
 }
 
-function valRankScore(rank) {
-  return Math.max(1, valRanks.indexOf(rank) + 1);
+function comparisonCopy(percent, label) {
+  if (percent >= 110) return `Você está ${percent - 100}% acima da referência no ${label}.`;
+  if (percent >= 100) return `Você alcançou ou superou a referência no ${label}.`;
+  if (percent >= 95) return `Praticamente o mesmo patamar no ${label}.`;
+  return `Seu nível atual representa ${percent}% da referência no ${label}.`;
 }
 
-function formatRank(rank, lp) {
-  return `${rank} · ${Math.max(0, Number(lp) || 0)} LP`;
+function overallCopy(percent) {
+  if (percent >= 110) return `Na média, você está ${percent - 100}% acima do fr0sty atual.`;
+  if (percent >= 100) return "Na média dos três jogos, você alcançou ou superou o fr0sty atual.";
+  if (percent >= 90) return "A média geral está muito próxima. A disputa é equilibrada.";
+  if (percent >= 70) return "Você já percorreu boa parte da distância até a referência geral.";
+  return `Sua média atual representa ${percent}% do balanço do fr0sty.`;
 }
 
-function comparisonCopy(percent, context) {
-  if (percent >= 110) return `Você ultrapassou essa referência em ${percent - 100}%.`;
-  if (percent >= 100) return "Você alcançou ou superou essa referência.";
-  if (percent >= 95) return "Praticamente o mesmo patamar competitivo.";
-  if (context === "peak") return `Seu melhor momento chegou a ${percent}% do pico do fr0sty.`;
-  return `Você está a ${100 - percent}% de igualar a referência atual.`;
+function formatLol(lol) {
+  if (!lol) return "Não consultado";
+  if (!lol.ranked) return "Sem elo Solo/Duo";
+  return `${lol.rankLabel} · ${lol.leaguePoints} LP`;
 }
 
-function valComparisonCopy(percent) {
-  if (percent >= 110) return `Seu pico ultrapassou Imortal 1 em ${percent - 100}%.`;
-  if (percent >= 100) return "Você alcançou ou superou o pico do fr0sty no VALORANT.";
-  if (percent >= 95) return "Praticamente o mesmo patamar no VALORANT.";
-  return `Seu pico no VALORANT chegou a ${percent}% de Imortal 1.`;
+function setLookupStatus(state, message) {
+  const status = document.querySelector("#lolLookupStatus");
+  status.dataset.state = state;
+  status.querySelector("span").textContent = message;
 }
 
-function verdict(currentPercent, peakPercent, valPeakPercent) {
-  const reached = [currentPercent, peakPercent, valPeakPercent].filter((value) => value >= 100).length;
-  if (reached === 3) return "Acima das três referências. O placar geral virou contra o Subzero.";
-  if (reached === 2) return "Duas referências alcançadas. A disputa já está muito equilibrada.";
-  if (reached === 1) return "Uma referência alcançada. Os outros dois placares ainda decidem a disputa.";
-  if ((currentPercent + peakPercent + valPeakPercent) / 3 >= 85) return "A diferença geral é curta. Uma boa sequência muda o placar.";
-  return "Ainda abaixo da referência. A régua continua com o Subzero.";
+function setBar(id, percent) {
+  document.querySelector(id).style.width = `${Math.min(Math.max(percent, 0), 100)}%`;
+}
+
+function save() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(player));
 }
 
 function render() {
-  const currentScore = rankScore(player.lolCurrent, player.lolCurrentLp);
-  const peakScore = rankScore(player.lolPeak, player.lolPeakLp);
-  const referenceCurrent = rankScore(reference.currentRank, reference.currentLp);
-  const referencePeak = rankScore(reference.peakRank, reference.peakLp);
-  const currentPercent = percentOf(currentScore, referenceCurrent);
-  const peakPercent = percentOf(peakScore, referencePeak);
-  const valPeakPercent = percentOf(valRankScore(player.valPeak), valRankScore(reference.valPeak));
-  const above = currentPercent >= 100 || peakPercent >= 100 || valPeakPercent >= 100;
+  const valPercent = percentOf(valRankScore(player.valCurrent), valRankScore(reference.valRank));
+  const gcPercent = percentOf(player.gcLevel, reference.gcLevel);
+  const lolPercent = player.lol
+    ? percentOf(rankScore(player.lol.rankLabel, player.lol.leaguePoints), rankScore(reference.lolRank, reference.lolLp))
+    : null;
 
-  document.querySelector("#resultName").textContent = player.nickname || "Sem nome";
-  document.querySelector("#resultRiot").textContent = player.riotId || "Riot ID não informado";
-  document.querySelector("#avatar").textContent = (player.nickname || "?").trim().charAt(0).toUpperCase();
-  document.querySelector("#resultLol").textContent = formatRank(player.lolCurrent, player.lolCurrentLp);
-  document.querySelector("#resultVal").textContent = `${player.valCurrent} · pico ${player.valPeak}`;
+  const fallbackName = player.riotId.includes("#") ? player.riotId.split("#")[0] : "Aguardando Riot ID";
+  const displayName = player.lol?.gameName || fallbackName;
+  document.querySelector("#resultName").textContent = displayName;
+  document.querySelector("#resultRiot").textContent = player.lol?.riotId || player.riotId || "Nick#TAG";
+  document.querySelector("#avatar").textContent = displayName.charAt(0).toUpperCase() || "?";
+  document.querySelector("#resultLol").textContent = formatLol(player.lol);
+  document.querySelector("#resultVal").textContent = player.valCurrent;
   document.querySelector("#resultGc").textContent = `Nível ${player.gcLevel}`;
-  document.querySelector("#currentPercent").textContent = `${currentPercent}%`;
-  document.querySelector("#peakPercent").textContent = `${peakPercent}%`;
-  document.querySelector("#valPeakPercent").textContent = `${valPeakPercent}%`;
-  document.querySelector("#currentBar").style.width = `${Math.min(currentPercent, 100)}%`;
-  document.querySelector("#peakBar").style.width = `${Math.min(peakPercent, 100)}%`;
-  document.querySelector("#valPeakBar").style.width = `${Math.min(valPeakPercent, 100)}%`;
-  document.querySelector("#playerCurrentCaption").textContent = formatRank(player.lolCurrent, player.lolCurrentLp);
-  document.querySelector("#playerPeakCaption").textContent = formatRank(player.lolPeak, player.lolPeakLp);
-  document.querySelector("#playerValPeakCaption").textContent = player.valPeak;
-  document.querySelector("#currentCopy").textContent = comparisonCopy(currentPercent, "current");
-  document.querySelector("#peakCopy").textContent = comparisonCopy(peakPercent, "peak");
-  document.querySelector("#valPeakCopy").textContent = valComparisonCopy(valPeakPercent);
-  document.querySelector("#verdict").textContent = verdict(currentPercent, peakPercent, valPeakPercent);
+
+  document.querySelector("#valPercent").textContent = `${valPercent}%`;
+  document.querySelector("#gcPercent").textContent = `${gcPercent}%`;
+  document.querySelector("#playerValCaption").textContent = player.valCurrent;
+  document.querySelector("#playerGcCaption").textContent = `Nível ${player.gcLevel}`;
+  document.querySelector("#valCopy").textContent = comparisonCopy(valPercent, "VALORANT");
+  document.querySelector("#gcCopy").textContent = comparisonCopy(gcPercent, "GC");
+  setBar("#valBar", valPercent);
+  setBar("#gcBar", gcPercent);
 
   const status = document.querySelector("#overallStatus");
-  status.textContent = above ? "Na referência ou acima" : "Abaixo da referência";
-  status.classList.toggle("above", above);
+  if (lolPercent === null) {
+    document.querySelector("#lolPercent").textContent = "—";
+    document.querySelector("#playerLolCaption").textContent = "Aguardando consulta";
+    document.querySelector("#lolCopy").textContent = "Informe o Riot ID para completar esta comparação.";
+    setBar("#lolBar", 0);
+    document.querySelector("#overallPercent").textContent = "—";
+    document.querySelector("#overallCopy").textContent = "A média aparece assim que o elo do LoL for consultado.";
+    setBar("#overallBar", 0);
+    status.textContent = "Pendente";
+    status.classList.remove("above");
+    return;
+  }
+
+  const lolLabel = formatLol(player.lol);
+  const average = Math.round((lolPercent + valPercent + gcPercent) / 3);
+  document.querySelector("#lolPercent").textContent = `${lolPercent}%`;
+  document.querySelector("#playerLolCaption").textContent = lolLabel;
+  document.querySelector("#lolCopy").textContent = comparisonCopy(lolPercent, "LoL");
+  setBar("#lolBar", lolPercent);
+  document.querySelector("#overallPercent").textContent = `${average}%`;
+  document.querySelector("#overallCopy").textContent = overallCopy(average);
+  setBar("#overallBar", average);
+  status.textContent = average >= 100 ? "Na referência ou acima" : `${average}% da referência`;
+  status.classList.toggle("above", average >= 100);
+}
+
+async function lookupLol(force = false) {
+  const riotId = document.querySelector("#riotId").value.trim();
+  player.riotId = riotId;
+
+  if (!riotId.includes("#") || riotId.startsWith("#") || riotId.endsWith("#")) {
+    player.lol = null;
+    setLookupStatus("error", "Use o formato completo Nick#TAG.");
+    render();
+    return false;
+  }
+
+  if (!force && riotId.toLowerCase() === lastLookupId.toLowerCase() && player.lol) {
+    return true;
+  }
+
+  const button = document.querySelector("#analyzeButton");
+  button.disabled = true;
+  button.textContent = "Consultando Riot…";
+  setLookupStatus("loading", "Buscando o elo Solo/Duo na Riot…");
+
+  try {
+    const response = await fetch(`/api/lol-rank?riotId=${encodeURIComponent(riotId)}`, {
+      headers: { Accept: "application/json" }
+    });
+    const data = await response.json();
+    if (!response.ok) throw Object.assign(new Error(data.message || "Não foi possível consultar a conta."), { code: data.code });
+
+    player.lol = data;
+    player.riotId = data.riotId;
+    lastLookupId = data.riotId;
+    document.querySelector("#riotId").value = data.riotId;
+    setLookupStatus("success", data.ranked ? `Encontrado: ${data.rankLabel}, ${data.leaguePoints} LP.` : "Conta encontrada, sem elo Solo/Duo nesta temporada.");
+    save();
+    render();
+    return true;
+  } catch (error) {
+    player.lol = null;
+    const message = error.code === "RIOT_KEY_MISSING"
+      ? "Consulta automática pronta; falta configurar a chave da Riot no servidor."
+      : error.message;
+    setLookupStatus("error", message);
+    render();
+    return false;
+  } finally {
+    button.disabled = false;
+    button.textContent = "Analisar agora";
+  }
 }
 
 function hydrate() {
-  fillSelect(document.querySelector("#lolCurrent"), lolRanks, player.lolCurrent);
-  fillSelect(document.querySelector("#lolPeak"), lolRanks, player.lolPeak);
   fillSelect(document.querySelector("#valCurrent"), valRanks, player.valCurrent);
-  fillSelect(document.querySelector("#valPeak"), valRanks, player.valPeak);
-  document.querySelector("#nickname").value = player.nickname;
   document.querySelector("#riotId").value = player.riotId;
-  document.querySelector("#lolCurrentLp").value = player.lolCurrentLp;
-  document.querySelector("#lolPeakLp").value = player.lolPeakLp;
   document.querySelector("#gcLevel").value = player.gcLevel;
   document.querySelector("#gcOutput").value = player.gcLevel;
+  if (player.lol) setLookupStatus("success", `Última consulta: ${formatLol(player.lol)}.`);
 }
 
 let toastTimer;
@@ -161,28 +225,44 @@ function showToast(message) {
   toastTimer = setTimeout(() => toast.classList.remove("show"), 2300);
 }
 
-const gcLevel = document.querySelector("#gcLevel");
-gcLevel.addEventListener("input", () => {
-  document.querySelector("#gcOutput").value = gcLevel.value;
+document.querySelector("#gcLevel").addEventListener("input", (event) => {
+  player.gcLevel = Number(event.target.value);
+  document.querySelector("#gcOutput").value = player.gcLevel;
+  save();
+  render();
 });
 
-document.querySelector("#playerForm").addEventListener("submit", (event) => {
-  event.preventDefault();
-  player = {
-    nickname: document.querySelector("#nickname").value.trim(),
-    riotId: document.querySelector("#riotId").value.trim(),
-    lolCurrent: document.querySelector("#lolCurrent").value,
-    lolCurrentLp: Number(document.querySelector("#lolCurrentLp").value),
-    lolPeak: document.querySelector("#lolPeak").value,
-    lolPeakLp: Number(document.querySelector("#lolPeakLp").value),
-    valCurrent: document.querySelector("#valCurrent").value,
-    valPeak: document.querySelector("#valPeak").value,
-    gcLevel: Number(gcLevel.value)
-  };
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(player));
+document.querySelector("#valCurrent").addEventListener("change", (event) => {
+  player.valCurrent = event.target.value;
+  save();
   render();
-  showToast("Comparação atualizada e salva neste navegador.");
-  document.querySelector(".result-panel").scrollIntoView({ behavior: "smooth", block: "center" });
+});
+
+document.querySelector("#riotId").addEventListener("input", (event) => {
+  clearTimeout(lookupTimer);
+  const riotId = event.target.value.trim();
+  player.riotId = riotId;
+  if (player.lol && riotId.toLowerCase() !== player.lol.riotId.toLowerCase()) player.lol = null;
+  save();
+  render();
+  if (riotId.includes("#") && riotId.split("#")[1]?.length >= 2) {
+    lookupTimer = setTimeout(() => lookupLol(), 900);
+  } else {
+    setLookupStatus("idle", "Digite o Riot ID completo para consultar o elo.");
+  }
+});
+
+document.querySelector("#playerForm").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  player.valCurrent = document.querySelector("#valCurrent").value;
+  player.gcLevel = Number(document.querySelector("#gcLevel").value);
+  save();
+  render();
+  const success = await lookupLol(true);
+  if (success) {
+    showToast("Perfil consultado e comparação atualizada.");
+    document.querySelector(".result-panel").scrollIntoView({ behavior: "smooth", block: "center" });
+  }
 });
 
 hydrate();

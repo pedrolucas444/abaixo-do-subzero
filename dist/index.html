@@ -4,11 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0a0a0b" />
-    <meta name="description" content="Compare seu elo com o Subzero, no auge e hoje." />
+    <meta name="description" content="Compare seu nível atual no LoL, VALORANT e Gamers Club com o Subzero." />
     <title>Abaixo do Subzero</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23d8ff37'/%3E%3Cpath d='M18 43 29 17h8l10 26h-8l-2-6H27l-2 6h-7Zm11-12h6l-3-9-3 9Z' fill='%230a0a0b'/%3E%3C/svg%3E" />
-    <link rel="stylesheet" href="./styles.css" />
-    <script src="./app.js" defer></script>
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/app.js" defer></script>
   </head>
   <body>
     <div class="grid-bg" aria-hidden="true"></div>
@@ -24,56 +24,54 @@
     <main id="topo">
       <section class="hero">
         <div class="hero-copy">
-          <p class="eyebrow">Comparador de elo</p>
+          <p class="eyebrow">Comparador multigame</p>
           <h1>Você está no nível do <span>Subzero?</span></h1>
           <p class="hero-text">
-            Coloque seus dados e descubra a distância entre você e as minhas referências
-            no LoL e no VALORANT.
+            Compare seu momento atual no LoL, VALORANT e Gamers Club com o fr0sty.
+            Três jogos, uma régua e um balanço geral.
           </p>
-          <a class="primary-button" href="#comparador">Comparar meu perfil</a>
+          <a class="primary-button" href="#comparador">Analisar meu perfil</a>
         </div>
 
         <aside class="reference-card" aria-labelledby="referenceTitle">
           <div class="reference-topline">
             <span>Conta de referência</span>
-            <span class="live-badge">Snapshot público</span>
+            <span class="live-badge">fr0sty#BR4</span>
           </div>
           <div class="reference-profile">
             <div class="monogram">F</div>
             <div>
-              <h2 id="referenceTitle">fr0sty<span>#BR4</span></h2>
-              <p>Servidor BR · Nível 775</p>
+              <h2 id="referenceTitle">Subzero</h2>
+              <p>Referências atuais e melhores marcas</p>
             </div>
           </div>
-          <div class="reference-stats">
-            <div>
-              <small>LoL · atual</small>
-              <strong>Diamante I</strong>
-              <span>75 LP</span>
-            </div>
-            <div>
-              <small>LoL · maior elo</small>
-              <strong>Mestre</strong>
-              <span>217 LP</span>
-            </div>
-            <div>
-              <small>VALORANT · maior elo</small>
-              <strong>Imortal 1</strong>
-              <span>Confirmado</span>
-            </div>
-          </div>
-          <div class="reference-meta">
-            <span>Mesmo Riot ID nos dois jogos</span>
-            <a href="https://www.leagueofgraphs.com/pt/summoner/br/fr0sty-BR4" target="_blank" rel="noreferrer">Ver perfil público</a>
+
+          <div class="reference-columns">
+            <section>
+              <span class="reference-column-title">Hoje</span>
+              <div class="reference-mini-grid">
+                <div><small>LoL</small><strong>Diamante I</strong><span>75 LP</span></div>
+                <div><small>VALORANT</small><strong>Diamante 3</strong><span>Atual</span></div>
+                <div><small>Gamers Club</small><strong>Nível 20</strong><span>Atual</span></div>
+              </div>
+            </section>
+            <section>
+              <span class="reference-column-title">Auge</span>
+              <div class="reference-mini-grid">
+                <div><small>LoL</small><strong>Mestre</strong><span>217 LP</span></div>
+                <div><small>VALORANT</small><strong>Imortal 1</strong><span>Maior elo</span></div>
+                <div><small>Gamers Club</small><strong>Nível 20</strong><span>Maior nível</span></div>
+              </div>
+            </section>
           </div>
         </aside>
       </section>
 
-      <section class="benchmark-strip" aria-label="Resumo da metodologia">
-        <p><strong>Riot ID:</strong> fr0sty#BR4</p>
-        <p><strong>Referência atual:</strong> Diamante I · 75 LP</p>
-        <p><strong>Pico no LoL:</strong> Mestre · 217 LP</p>
-        <p><strong>Pico no VAL:</strong> Imortal 1</p>
+      <section class="benchmark-strip" aria-label="Referências usadas na comparação">
+        <p><strong>LoL atual:</strong> Diamante I · 75 LP</p>
+        <p><strong>VAL atual:</strong> Diamante 3</p>
+        <p><strong>GC atual:</strong> Nível 20</p>
+        <p><strong>Cálculo:</strong> média das 3 comparações</p>
       </section>
 
       <section class="compare-section" id="comparador" aria-labelledby="compareTitle">
@@ -82,84 +80,52 @@
             <p class="eyebrow">Perfil do desafiante</p>
             <h2 id="compareTitle">Monte a comparação.</h2>
           </div>
-          <p>Os dados ficam salvos somente neste navegador.</p>
+          <p>O LoL é consultado pelo Riot ID. VALORANT e GC são informados manualmente.</p>
         </div>
 
         <div class="compare-grid">
           <form class="panel input-panel" id="playerForm">
             <div class="panel-heading">
               <div>
-                <span class="panel-label">Dados do jogador</span>
-                <h3>Quem vai entrar na régua?</h3>
+                <span class="panel-label">Dados atuais</span>
+                <h3>Como está o perfil hoje?</h3>
               </div>
               <span class="step-badge">01</span>
             </div>
 
-            <div class="field-row">
-              <label class="field">
-                <span>Nome</span>
-                <input id="nickname" name="nickname" maxlength="28" placeholder="Nome do jogador" required />
-              </label>
-              <label class="field">
-                <span>Riot ID</span>
-                <input id="riotId" name="riotId" maxlength="40" placeholder="Jogador#BR1" required />
-              </label>
-            </div>
-
-            <div class="game-section primary-game">
+            <div class="game-section first-game">
               <div class="game-title">
                 <span class="game-logo lol-logo">L</span>
                 <div>
                   <strong>League of Legends</strong>
-                  <small>Este jogo define as duas barras de comparação</small>
+                  <small>O elo é buscado automaticamente</small>
                 </div>
               </div>
-
-              <div class="rank-grid">
-                <div class="rank-group">
-                  <span class="rank-label">Elo atual</span>
-                  <label class="field">
-                    <span>Divisão</span>
-                    <select id="lolCurrent" name="lolCurrent"></select>
-                  </label>
-                  <label class="field">
-                    <span>LP</span>
-                    <input id="lolCurrentLp" name="lolCurrentLp" type="number" min="0" max="3000" inputmode="numeric" />
-                  </label>
-                </div>
-                <div class="rank-group">
-                  <span class="rank-label">Maior elo</span>
-                  <label class="field">
-                    <span>Divisão</span>
-                    <select id="lolPeak" name="lolPeak"></select>
-                  </label>
-                  <label class="field">
-                    <span>LP</span>
-                    <input id="lolPeakLp" name="lolPeakLp" type="number" min="0" max="3000" inputmode="numeric" />
-                  </label>
-                </div>
+              <label class="field">
+                <span>Riot ID</span>
+                <input id="riotId" name="riotId" maxlength="40" placeholder="Nick#TAG" autocomplete="off" required />
+              </label>
+              <div class="lookup-status" id="lolLookupStatus" data-state="idle">
+                <i></i><span>Digite o Riot ID completo para consultar o elo.</span>
               </div>
             </div>
 
-            <div class="secondary-games">
+            <div class="secondary-games current-only-games">
               <div class="game-section compact-game">
                 <div class="game-title">
                   <span class="game-logo val-logo">V</span>
-                  <div><strong>VALORANT</strong><small>O maior elo entra na comparação</small></div>
+                  <div><strong>VALORANT</strong><small>Elo atual</small></div>
                 </div>
-                <div class="field-row">
-                  <label class="field"><span>Elo atual</span><select id="valCurrent"></select></label>
-                  <label class="field"><span>Maior elo</span><select id="valPeak"></select></label>
-                </div>
+                <label class="field"><span>Selecione o elo</span><select id="valCurrent"></select></label>
               </div>
 
               <div class="game-section compact-game">
                 <div class="game-title">
                   <span class="game-logo gc-logo">GC</span>
-                  <div><strong>Gamers Club</strong><small>Preenchimento manual</small></div>
+                  <div><strong>Gamers Club</strong><small>Nível atual</small></div>
                 </div>
                 <label class="field">
-                  <span>Nível atual</span>
+                  <span>Selecione o nível</span>
                   <div class="range-wrap">
                     <input id="gcLevel" type="range" min="1" max="20" value="10" />
                     <output id="gcOutput" for="gcLevel">10</output>
@@ -168,8 +134,8 @@
               </div>
             </div>
 
-            <button class="primary-button submit-button" type="submit">Comparar com o Subzero</button>
-            <p class="form-note">Nesta versão, os elos são informados manualmente. A integração Riot entra depois.</p>
+            <button class="primary-button submit-button" id="analyzeButton" type="submit">Analisar agora</button>
+            <p class="form-note">Nenhum dado é gravado em banco. O último perfil fica somente neste navegador.</p>
           </form>
 
           <article class="panel result-panel" aria-live="polite">
@@ -182,84 +148,62 @@
             </div>
 
             <div class="player-summary">
-              <div class="player-avatar" id="avatar">R</div>
+              <div class="player-avatar" id="avatar">?</div>
               <div>
                 <small>Desafiante</small>
-                <h3 id="resultName">Rival</h3>
-                <p id="resultRiot">Jogador#BR1</p>
+                <h3 id="resultName">Aguardando Riot ID</h3>
+                <p id="resultRiot">Nick#TAG</p>
               </div>
-              <span class="score-chip" id="overallStatus">Abaixo da referência</span>
+              <span class="score-chip" id="overallStatus">Pendente</span>
             </div>
 
             <div class="profile-ranks">
-              <div><span class="game-logo lol-logo">L</span><p><small>LoL</small><strong id="resultLol">Ouro II · 40 LP</strong></p></div>
-              <div><span class="game-logo val-logo">V</span><p><small>VALORANT</small><strong id="resultVal">Prata 3 · pico Ouro 2</strong></p></div>
-              <div><span class="game-logo gc-logo">GC</span><p><small>Gamers Club</small><strong id="resultGc">Nível 10</strong></p></div>
+              <div><span class="game-logo lol-logo">L</span><p><small>LoL atual</small><strong id="resultLol">Não consultado</strong></p></div>
+              <div><span class="game-logo val-logo">V</span><p><small>VALORANT atual</small><strong id="resultVal">Prata 3</strong></p></div>
+              <div><span class="game-logo gc-logo">GC</span><p><small>Gamers Club atual</small><strong id="resultGc">Nível 10</strong></p></div>
             </div>
 
             <div class="comparison-list">
               <section class="comparison-item">
                 <div class="comparison-title">
-                  <div>
-                    <span>Comparação atual</span>
-                    <h4>Você hoje <i>vs.</i> fr0sty hoje</h4>
-                  </div>
-                  <strong id="currentPercent">58%</strong>
+                  <div><span>League of Legends</span><h4>Você hoje <i>vs.</i> D1 75 LP</h4></div>
+                  <strong id="lolPercent">—</strong>
                 </div>
-                <div class="bar-track">
-                  <span class="bar-fill current-bar" id="currentBar"></span>
-                  <i class="target-marker"><b>fr0sty</b></i>
-                </div>
-                <div class="bar-caption">
-                  <span id="playerCurrentCaption">Ouro II · 40 LP</span>
-                  <span>Diamante I · 75 LP</span>
-                </div>
-                <p id="currentCopy">Você está a 42% da referência atual.</p>
+                <div class="bar-track"><span class="bar-fill current-bar" id="lolBar"></span><i class="target-marker"><b>fr0sty</b></i></div>
+                <div class="bar-caption"><span id="playerLolCaption">Aguardando consulta</span><span>Diamante I · 75 LP</span></div>
+                <p id="lolCopy">Informe o Riot ID para completar esta comparação.</p>
               </section>
 
               <section class="comparison-item">
                 <div class="comparison-title">
-                  <div>
-                    <span>Comparação histórica</span>
-                    <h4>Seu auge <i>vs.</i> auge do fr0sty</h4>
-                  </div>
-                  <strong id="peakPercent">64%</strong>
+                  <div><span>VALORANT</span><h4>Você hoje <i>vs.</i> Diamante 3</h4></div>
+                  <strong id="valPercent">50%</strong>
                 </div>
-                <div class="bar-track">
-                  <span class="bar-fill peak-bar" id="peakBar"></span>
-                  <i class="target-marker"><b>fr0sty</b></i>
-                </div>
-                <div class="bar-caption">
-                  <span id="playerPeakCaption">Platina III · 20 LP</span>
-                  <span>Mestre · 217 LP</span>
-                </div>
-                <p id="peakCopy">Seu melhor momento chegou a 64% do pico do fr0sty.</p>
+                <div class="bar-track"><span class="bar-fill val-peak-bar" id="valBar"></span><i class="target-marker"><b>fr0sty</b></i></div>
+                <div class="bar-caption"><span id="playerValCaption">Prata 3</span><span>Diamante 3</span></div>
+                <p id="valCopy">Seu elo atual está a 50% da referência.</p>
               </section>
 
               <section class="comparison-item">
                 <div class="comparison-title">
-                  <div>
-                    <span>Comparação no VALORANT</span>
-                    <h4>Seu auge <i>vs.</i> Imortal 1 do fr0sty</h4>
-                  </div>
-                  <strong id="valPeakPercent">50%</strong>
+                  <div><span>Gamers Club</span><h4>Você hoje <i>vs.</i> nível 20</h4></div>
+                  <strong id="gcPercent">50%</strong>
                 </div>
-                <div class="bar-track">
-                  <span class="bar-fill val-peak-bar" id="valPeakBar"></span>
-                  <i class="target-marker"><b>fr0sty</b></i>
-                </div>
-                <div class="bar-caption">
-                  <span id="playerValPeakCaption">Ouro 2</span>
-                  <span>Imortal 1</span>
-                </div>
-                <p id="valPeakCopy">Seu pico no VALORANT chegou a 50% de Imortal 1.</p>
+                <div class="bar-track"><span class="bar-fill gc-bar" id="gcBar"></span><i class="target-marker"><b>fr0sty</b></i></div>
+                <div class="bar-caption"><span id="playerGcCaption">Nível 10</span><span>Nível 20</span></div>
+                <p id="gcCopy">Seu nível atual representa 50% da referência.</p>
               </section>
             </div>
 
-            <div class="verdict-card">
-              <span>Leitura rápida</span>
-              <p id="verdict">Ainda abaixo da referência. A régua continua com o Subzero.</p>
-            </div>
+            <section class="overall-card" id="overallCard">
+              <div>
+                <span>Balanço geral</span>
+                <h4>Média dos três jogos</h4>
+              </div>
+              <strong id="overallPercent">—</strong>
+              <div class="overall-track"><span id="overallBar"></span></div>
+              <p id="overallCopy">A média aparece assim que o elo do LoL for consultado.</p>
+            </section>
           </article>
         </div>
       </section>
@@ -267,20 +211,20 @@
       <section class="method-section" aria-labelledby="methodTitle">
         <div class="method-copy">
           <p class="eyebrow">Como é calculado</p>
-          <h2 id="methodTitle">Uma régua direta, sem mistério.</h2>
+          <h2 id="methodTitle">Três comparações, uma média.</h2>
         </div>
         <div class="method-grid">
-          <article><span>01</span><h3>LoL atual</h3><p>Seu rank e LP atuais são comparados com Diamante I, 75 LP.</p></article>
-          <article><span>02</span><h3>Pico no LoL</h3><p>Seu melhor rank e LP são comparados com Mestre, 217 LP.</p></article>
-          <article><span>03</span><h3>Pico no VAL</h3><p>Seu maior elo no VALORANT é comparado com Imortal 1.</p></article>
-          <article><span>04</span><h3>Nível GC</h3><p>A Gamers Club permanece manual e aparece como contexto do perfil.</p></article>
+          <article><span>01</span><h3>LoL automático</h3><p>O Riot ID retorna o elo Solo/Duo atual e compara com D1, 75 LP.</p></article>
+          <article><span>02</span><h3>VAL atual</h3><p>O elo selecionado é comparado com o Diamante 3 atual do fr0sty.</p></article>
+          <article><span>03</span><h3>GC atual</h3><p>O nível informado é comparado com o nível 20 atual do fr0sty.</p></article>
+          <article><span>04</span><h3>Média geral</h3><p>A porcentagem final é a média simples das três comparações.</p></article>
         </div>
       </section>
     </main>
 
     <footer>
       <div><span class="brand-mark small">AS</span><strong>Abaixo do Subzero</strong></div>
-      <p>Projeto de brincadeira · Não afiliado à Riot Games ou à Gamers Club.</p>
+      <p>Abaixo do Subzero isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc.</p>
     </footer>
 
     <div class="toast" id="toast" role="status" aria-live="polite">Comparação salva.</div>

@@ -2,3 +2,5 @@
 *.log
 .sites-workflow/
 *.tar.gz
+dist/.openai/
+dist/server/

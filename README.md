@@ -2,28 +2,34 @@
 
 Uma régua competitiva bem-humorada para comparar o elo de um jogador com a conta `fr0sty#BR4`, identidade do Subzero.
 
-O protótipo combina:
+O aplicativo combina:
 
-- elo atual e maior elo no League of Legends;
-- elo atual e maior elo no VALORANT;
+- elo atual do League of Legends consultado automaticamente pelo Riot ID;
+- elo atual do VALORANT selecionado pelo jogador;
 - nível informado manualmente na Gamers Club;
-- duas barras de proximidade no LoL: contra `fr0sty#BR4` no auge e atualmente;
-- uma barra de proximidade no VALORANT: maior elo contra o pico Imortal 1 do Subzero;
+- três barras individuais contra o fr0sty atual;
+- média geral das porcentagens de LoL, VALORANT e Gamers Club;
 - persistência exclusivamente local com `localStorage`.
 
 ## Rodar localmente
 
-O site é estático. Abra `dist/index.html` diretamente ou sirva a pasta:
+Gere o Worker e inicie a prévia local:
 
 ```bash
-python3 -m http.server 4173 --directory dist
+node scripts/build-worker.mjs
+node scripts/preview-worker.mjs
 ```
 
 Depois, acesse `http://localhost:4173`.
 
-## Estado das integrações
+## Integração Riot
 
-Esta primeira versão usa seleção manual de elos para demonstrar a experiência completa sem chaves ou servidor. A referência inicial de `fr0sty#BR4` é Diamante I, 75 LP atualmente e Mestre, 217 LP como maior elo registrado no snapshot público consultado no LoL. No VALORANT, o pico confirmado pelo dono da conta é Imortal 1; o elo atual ainda não está conectado. A integração oficial com a Riot deverá ser feita em uma próxima etapa, por meio de um backend que preserve a chave da API. O nível da Gamers Club permanece manual.
+O backend consulta Account-V1, Summoner-V4 e League-V4. A chave deve ser configurada no servidor como o segredo `RIOT_API_KEY`; ela nunca é enviada ao navegador.
+
+As referências do Subzero são:
+
+- hoje: LoL Diamante I 75 LP, VALORANT Diamante 3 e GC nível 20;
+- auge: LoL Mestre 217 LP, VALORANT Imortal 1 e GC nível 20.
 
 ## Aviso
 
