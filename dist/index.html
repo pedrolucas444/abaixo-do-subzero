@@ -27,8 +27,8 @@
           <p class="eyebrow">Comparador de elo</p>
           <h1>Você está no nível do <span>Subzero?</span></h1>
           <p class="hero-text">
-            Coloque seus dados e descubra a distância entre você e o meu elo no LoL —
-            tanto no auge quanto na temporada atual.
+            Coloque seus dados e descubra a distância entre você e as minhas referências
+            no LoL e no VALORANT.
           </p>
           <a class="primary-button" href="#comparador">Comparar meu perfil</a>
         </div>
@@ -47,27 +47,33 @@
           </div>
           <div class="reference-stats">
             <div>
-              <small>Elo atual</small>
+              <small>LoL · atual</small>
               <strong>Diamante I</strong>
               <span>75 LP</span>
             </div>
             <div>
-              <small>Maior elo</small>
+              <small>LoL · maior elo</small>
               <strong>Mestre</strong>
               <span>217 LP</span>
             </div>
+            <div>
+              <small>VALORANT · maior elo</small>
+              <strong>Imortal 1</strong>
+              <span>Confirmado</span>
+            </div>
           </div>
           <div class="reference-meta">
-            <span>Top 1,15% no BR</span>
+            <span>Mesmo Riot ID nos dois jogos</span>
             <a href="https://www.leagueofgraphs.com/pt/summoner/br/fr0sty-BR4" target="_blank" rel="noreferrer">Ver perfil público</a>
           </div>
         </aside>
       </section>
 
       <section class="benchmark-strip" aria-label="Resumo da metodologia">
-        <p><strong>Base da régua:</strong> LoL Solo/Duo</p>
+        <p><strong>Riot ID:</strong> fr0sty#BR4</p>
         <p><strong>Referência atual:</strong> Diamante I · 75 LP</p>
-        <p><strong>Referência máxima:</strong> Mestre · 217 LP</p>
+        <p><strong>Pico no LoL:</strong> Mestre · 217 LP</p>
+        <p><strong>Pico no VAL:</strong> Imortal 1</p>
       </section>
 
       <section class="compare-section" id="comparador" aria-labelledby="compareTitle">
@@ -139,7 +145,7 @@
               <div class="game-section compact-game">
                 <div class="game-title">
                   <span class="game-logo val-logo">V</span>
-                  <div><strong>VALORANT</strong><small>Informação de perfil</small></div>
+                  <div><strong>VALORANT</strong><small>O maior elo entra na comparação</small></div>
                 </div>
                 <div class="field-row">
                   <label class="field"><span>Elo atual</span><select id="valCurrent"></select></label>
@@ -187,7 +193,7 @@
 
             <div class="profile-ranks">
               <div><span class="game-logo lol-logo">L</span><p><small>LoL</small><strong id="resultLol">Ouro II · 40 LP</strong></p></div>
-              <div><span class="game-logo val-logo">V</span><p><small>VALORANT</small><strong id="resultVal">Prata 3</strong></p></div>
+              <div><span class="game-logo val-logo">V</span><p><small>VALORANT</small><strong id="resultVal">Prata 3 · pico Ouro 2</strong></p></div>
               <div><span class="game-logo gc-logo">GC</span><p><small>Gamers Club</small><strong id="resultGc">Nível 10</strong></p></div>
             </div>
 
@@ -229,6 +235,25 @@
                 </div>
                 <p id="peakCopy">Seu melhor momento chegou a 64% do pico do fr0sty.</p>
               </section>
+
+              <section class="comparison-item">
+                <div class="comparison-title">
+                  <div>
+                    <span>Comparação no VALORANT</span>
+                    <h4>Seu auge <i>vs.</i> Imortal 1 do fr0sty</h4>
+                  </div>
+                  <strong id="valPeakPercent">50%</strong>
+                </div>
+                <div class="bar-track">
+                  <span class="bar-fill val-peak-bar" id="valPeakBar"></span>
+                  <i class="target-marker"><b>fr0sty</b></i>
+                </div>
+                <div class="bar-caption">
+                  <span id="playerValPeakCaption">Ouro 2</span>
+                  <span>Imortal 1</span>
+                </div>
+                <p id="valPeakCopy">Seu pico no VALORANT chegou a 50% de Imortal 1.</p>
+              </section>
             </div>
 
             <div class="verdict-card">
@@ -245,9 +270,10 @@
           <h2 id="methodTitle">Uma régua direta, sem mistério.</h2>
         </div>
         <div class="method-grid">
-          <article><span>01</span><h3>Elo atual</h3><p>Seu rank e LP atuais são comparados com Diamante I, 75 LP.</p></article>
-          <article><span>02</span><h3>Maior elo</h3><p>Seu melhor rank e LP são comparados com Mestre, 217 LP.</p></article>
-          <article><span>03</span><h3>Outros jogos</h3><p>VALORANT e GC aparecem no perfil, mas não distorcem a régua de LoL.</p></article>
+          <article><span>01</span><h3>LoL atual</h3><p>Seu rank e LP atuais são comparados com Diamante I, 75 LP.</p></article>
+          <article><span>02</span><h3>Pico no LoL</h3><p>Seu melhor rank e LP são comparados com Mestre, 217 LP.</p></article>
+          <article><span>03</span><h3>Pico no VAL</h3><p>Seu maior elo no VALORANT é comparado com Imortal 1.</p></article>
+          <article><span>04</span><h3>Nível GC</h3><p>A Gamers Club permanece manual e aparece como contexto do perfil.</p></article>
         </div>
       </section>
     </main>

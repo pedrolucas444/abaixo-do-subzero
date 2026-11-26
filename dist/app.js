@@ -23,7 +23,8 @@ const reference = {
   currentRank: "Diamante I",
   currentLp: 75,
   peakRank: "Mestre",
-  peakLp: 217
+  peakLp: 217,
+  valPeak: "Imortal 1"
 };
 
 const defaults = {
@@ -71,6 +72,10 @@ function percentOf(score, target) {
   return Math.max(0, Math.round((score / Math.max(target, 1)) * 100));
 }
 
+function valRankScore(rank) {
+  return Math.max(1, valRanks.indexOf(rank) + 1);
+}
+
 function formatRank(rank, lp) {
   return `${rank} · ${Math.max(0, Number(lp) || 0)} LP`;
 }
@@ -83,11 +88,19 @@ function comparisonCopy(percent, context) {
   return `Você está a ${100 - percent}% de igualar a referência atual.`;
 }
 
-function verdict(currentPercent, peakPercent) {
-  if (currentPercent >= 100 && peakPercent >= 100) return "Acima das duas referências. Hoje, o Subzero estaria olhando para cima.";
-  if (currentPercent >= 100) return "Você já igualou a régua atual. O histórico ainda decide a disputa.";
-  if (peakPercent >= 100) return "Seu auge passou da marca histórica. Agora falta sustentar isso no elo atual.";
-  if ((currentPercent + peakPercent) / 2 >= 85) return "A diferença é curta. Uma boa sequência muda o placar.";
+function valComparisonCopy(percent) {
+  if (percent >= 110) return `Seu pico ultrapassou Imortal 1 em ${percent - 100}%.`;
+  if (percent >= 100) return "Você alcançou ou superou o pico do fr0sty no VALORANT.";
+  if (percent >= 95) return "Praticamente o mesmo patamar no VALORANT.";
+  return `Seu pico no VALORANT chegou a ${percent}% de Imortal 1.`;
+}
+
+function verdict(currentPercent, peakPercent, valPeakPercent) {
+  const reached = [currentPercent, peakPercent, valPeakPercent].filter((value) => value >= 100).length;
+  if (reached === 3) return "Acima das três referências. O placar geral virou contra o Subzero.";
+  if (reached === 2) return "Duas referências alcançadas. A disputa já está muito equilibrada.";
+  if (reached === 1) return "Uma referência alcançada. Os outros dois placares ainda decidem a disputa.";
+  if ((currentPercent + peakPercent + valPeakPercent) / 3 >= 85) return "A diferença geral é curta. Uma boa sequência muda o placar.";
   return "Ainda abaixo da referência. A régua continua com o Subzero.";
 }
 
@@ -98,23 +111,28 @@ function render() {
   const referencePeak = rankScore(reference.peakRank, reference.peakLp);
   const currentPercent = percentOf(currentScore, referenceCurrent);
   const peakPercent = percentOf(peakScore, referencePeak);
-  const above = currentPercent >= 100 || peakPercent >= 100;
+  const valPeakPercent = percentOf(valRankScore(player.valPeak), valRankScore(reference.valPeak));
+  const above = currentPercent >= 100 || peakPercent >= 100 || valPeakPercent >= 100;
 
   document.querySelector("#resultName").textContent = player.nickname || "Sem nome";
   document.querySelector("#resultRiot").textContent = player.riotId || "Riot ID não informado";
   document.querySelector("#avatar").textContent = (player.nickname || "?").trim().charAt(0).toUpperCase();
   document.querySelector("#resultLol").textContent = formatRank(player.lolCurrent, player.lolCurrentLp);
-  document.querySelector("#resultVal").textContent = player.valCurrent;
+  document.querySelector("#resultVal").textContent = `${player.valCurrent} · pico ${player.valPeak}`;
   document.querySelector("#resultGc").textContent = `Nível ${player.gcLevel}`;
   document.querySelector("#currentPercent").textContent = `${currentPercent}%`;
   document.querySelector("#peakPercent").textContent = `${peakPercent}%`;
+  document.querySelector("#valPeakPercent").textContent = `${valPeakPercent}%`;
   document.querySelector("#currentBar").style.width = `${Math.min(currentPercent, 100)}%`;
   document.querySelector("#peakBar").style.width = `${Math.min(peakPercent, 100)}%`;
+  document.querySelector("#valPeakBar").style.width = `${Math.min(valPeakPercent, 100)}%`;
   document.querySelector("#playerCurrentCaption").textContent = formatRank(player.lolCurrent, player.lolCurrentLp);
   document.querySelector("#playerPeakCaption").textContent = formatRank(player.lolPeak, player.lolPeakLp);
+  document.querySelector("#playerValPeakCaption").textContent = player.valPeak;
   document.querySelector("#currentCopy").textContent = comparisonCopy(currentPercent, "current");
   document.querySelector("#peakCopy").textContent = comparisonCopy(peakPercent, "peak");
-  document.querySelector("#verdict").textContent = verdict(currentPercent, peakPercent);
+  document.querySelector("#valPeakCopy").textContent = valComparisonCopy(valPeakPercent);
+  document.querySelector("#verdict").textContent = verdict(currentPercent, peakPercent, valPeakPercent);
 
   const status = document.querySelector("#overallStatus");
   status.textContent = above ? "Na referência ou acima" : "Abaixo da referência";

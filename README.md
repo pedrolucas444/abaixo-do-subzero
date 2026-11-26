@@ -8,6 +8,7 @@ O protótipo combina:
 - elo atual e maior elo no VALORANT;
 - nível informado manualmente na Gamers Club;
 - duas barras de proximidade no LoL: contra `fr0sty#BR4` no auge e atualmente;
+- uma barra de proximidade no VALORANT: maior elo contra o pico Imortal 1 do Subzero;
 - persistência exclusivamente local com `localStorage`.
 
 ## Rodar localmente
@@ -22,7 +23,7 @@ Depois, acesse `http://localhost:4173`.
 
 ## Estado das integrações
 
-Esta primeira versão usa seleção manual de elos para demonstrar a experiência completa sem chaves ou servidor. A referência inicial de `fr0sty#BR4` é Diamante I, 75 LP atualmente e Mestre, 217 LP como maior elo registrado no snapshot público consultado. A integração oficial com a Riot deverá ser feita em uma próxima etapa, por meio de um backend que preserve a chave da API. O nível da Gamers Club permanece manual.
+Esta primeira versão usa seleção manual de elos para demonstrar a experiência completa sem chaves ou servidor. A referência inicial de `fr0sty#BR4` é Diamante I, 75 LP atualmente e Mestre, 217 LP como maior elo registrado no snapshot público consultado no LoL. No VALORANT, o pico confirmado pelo dono da conta é Imortal 1; o elo atual ainda não está conectado. A integração oficial com a Riot deverá ser feita em uma próxima etapa, por meio de um backend que preserve a chave da API. O nível da Gamers Club permanece manual.
 
 ## Aviso
 
