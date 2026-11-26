@@ -1,4 +1,4 @@
-const STORAGE_KEY = "abaixo-do-subzero:v1";
+const STORAGE_KEY = "abaixo-do-subzero:v2";
 
 const lolRanks = [
   "Ferro IV", "Ferro III", "Ferro II", "Ferro I",
@@ -12,49 +12,41 @@ const lolRanks = [
 ];
 
 const valRanks = [
-  "Ferro 1", "Ferro 2", "Ferro 3",
-  "Bronze 1", "Bronze 2", "Bronze 3",
-  "Prata 1", "Prata 2", "Prata 3",
-  "Ouro 1", "Ouro 2", "Ouro 3",
-  "Platina 1", "Platina 2", "Platina 3",
-  "Diamante 1", "Diamante 2", "Diamante 3",
-  "Ascendente 1", "Ascendente 2", "Ascendente 3",
-  "Imortal 1", "Imortal 2", "Imortal 3", "Radiante"
+  "Ferro 1", "Ferro 2", "Ferro 3", "Bronze 1", "Bronze 2", "Bronze 3",
+  "Prata 1", "Prata 2", "Prata 3", "Ouro 1", "Ouro 2", "Ouro 3",
+  "Platina 1", "Platina 2", "Platina 3", "Diamante 1", "Diamante 2", "Diamante 3",
+  "Ascendente 1", "Ascendente 2", "Ascendente 3", "Imortal 1", "Imortal 2", "Imortal 3", "Radiante"
 ];
 
-const defaults = {
-  player: {
-    nickname: "Frostzera",
-    riotId: "Jogador#BR1",
-    lolCurrent: "Ouro II",
-    lolPeak: "Platina III",
-    valCurrent: "Prata 3",
-    valPeak: "Ouro 2",
-    gcLevel: 10
-  },
-  owner: {
-    lolCurrent: "Platina IV",
-    valCurrent: "Ouro 3",
-    gcCurrent: 12,
-    lolPeak: "Diamante II",
-    valPeak: "Ascendente 1",
-    gcPeak: 16
-  }
+const reference = {
+  riotId: "fr0sty#BR4",
+  currentRank: "Diamante I",
+  currentLp: 75,
+  peakRank: "Mestre",
+  peakLp: 217
 };
 
-function loadState() {
+const defaults = {
+  nickname: "Rival",
+  riotId: "Jogador#BR1",
+  lolCurrent: "Ouro II",
+  lolCurrentLp: 40,
+  lolPeak: "Platina III",
+  lolPeakLp: 20,
+  valCurrent: "Prata 3",
+  valPeak: "Ouro 2",
+  gcLevel: 10
+};
+
+function loadPlayer() {
   try {
-    const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    return {
-      player: { ...defaults.player, ...(parsed?.player || {}) },
-      owner: { ...defaults.owner, ...(parsed?.owner || {}) }
-    };
+    return { ...defaults, ...(JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}) };
   } catch {
-    return structuredClone(defaults);
+    return { ...defaults };
   }
 }
 
-let state = loadState();
+let player = loadPlayer();
 
 function fillSelect(select, options, selected) {
   select.replaceChildren(...options.map((label) => {
@@ -66,82 +58,80 @@ function fillSelect(select, options, selected) {
   }));
 }
 
-function rankScore(rank, list) {
-  const index = Math.max(0, list.indexOf(rank));
-  return Math.round((index / (list.length - 1)) * 100);
+function rankScore(rank, lp) {
+  const numericLp = Math.max(0, Number(lp) || 0);
+  if (rank === "Mestre") return 2800 + numericLp;
+  if (rank === "Grão-Mestre") return 4000 + numericLp;
+  if (rank === "Desafiante") return 6000 + numericLp;
+  const index = Math.max(0, lolRanks.indexOf(rank));
+  return index * 100 + Math.min(numericLp, 99);
 }
 
-function combinedScore(lol, val, gc) {
-  return Math.round((rankScore(lol, lolRanks) + rankScore(val, valRanks) + ((Number(gc) - 1) / 19) * 100) / 3);
+function percentOf(score, target) {
+  return Math.max(0, Math.round((score / Math.max(target, 1)) * 100));
 }
 
-function comparisonPercent(playerScore, ownerScore) {
-  return Math.max(0, Math.min(120, Math.round((playerScore / Math.max(ownerScore, 1)) * 100)));
+function formatRank(rank, lp) {
+  return `${rank} · ${Math.max(0, Number(lp) || 0)} LP`;
 }
 
-function comparisonCopy(percent, mode) {
-  if (percent >= 110) return mode === "peak"
-    ? "Plot twist: o desafiante passou até da sua versão lendária."
-    : "Alerta vermelho: hoje o congelado seria você.";
-  if (percent >= 95) return "Empate técnico. Qualquer partida pode virar a sentença.";
-  if (percent >= 75) return "Já dá para sentir o frio na nuca. A distância ficou curta.";
-  if (percent >= 50) return "Está no caminho, mas ainda faltam alguns graus para encostar.";
-  return "O termômetro nem se mexeu. Por enquanto, segue no freezer.";
+function comparisonCopy(percent, context) {
+  if (percent >= 110) return `Você ultrapassou essa referência em ${percent - 100}%.`;
+  if (percent >= 100) return "Você alcançou ou superou essa referência.";
+  if (percent >= 95) return "Praticamente o mesmo patamar competitivo.";
+  if (context === "peak") return `Seu melhor momento chegou a ${percent}% do pico do fr0sty.`;
+  return `Você está a ${100 - percent}% de igualar a referência atual.`;
 }
 
-function verdictFor(score, currentPercent) {
-  if (currentPercent >= 110) return "O aprendiz virou o freezer contra o criador. <strong>Você foi descongelado.</strong>";
-  if (currentPercent >= 95) return "Risco de empate técnico. <strong>Marque a MD3 imediatamente.</strong>";
-  if (score >= 65) return "Promissor, perigoso e quase climatizado. <strong>A zoeira está por um fio.</strong>";
-  if (score >= 40) return "Promissor, mas ainda oficialmente <strong>abaixo do subzero.</strong>";
-  return "Quadro grave de hipotermia competitiva. <strong>Permaneça no aquecimento.</strong>";
+function verdict(currentPercent, peakPercent) {
+  if (currentPercent >= 100 && peakPercent >= 100) return "Acima das duas referências. Hoje, o Subzero estaria olhando para cima.";
+  if (currentPercent >= 100) return "Você já igualou a régua atual. O histórico ainda decide a disputa.";
+  if (peakPercent >= 100) return "Seu auge passou da marca histórica. Agora falta sustentar isso no elo atual.";
+  if ((currentPercent + peakPercent) / 2 >= 85) return "A diferença é curta. Uma boa sequência muda o placar.";
+  return "Ainda abaixo da referência. A régua continua com o Subzero.";
 }
 
 function render() {
-  const { player, owner } = state;
-  const playerScore = combinedScore(player.lolCurrent, player.valCurrent, player.gcLevel);
-  const ownerCurrent = combinedScore(owner.lolCurrent, owner.valCurrent, owner.gcCurrent);
-  const ownerPeak = combinedScore(owner.lolPeak, owner.valPeak, owner.gcPeak);
-  const peakPercent = comparisonPercent(playerScore, ownerPeak);
-  const currentPercent = comparisonPercent(playerScore, ownerCurrent);
+  const currentScore = rankScore(player.lolCurrent, player.lolCurrentLp);
+  const peakScore = rankScore(player.lolPeak, player.lolPeakLp);
+  const referenceCurrent = rankScore(reference.currentRank, reference.currentLp);
+  const referencePeak = rankScore(reference.peakRank, reference.peakLp);
+  const currentPercent = percentOf(currentScore, referenceCurrent);
+  const peakPercent = percentOf(peakScore, referencePeak);
+  const above = currentPercent >= 100 || peakPercent >= 100;
 
   document.querySelector("#resultName").textContent = player.nickname || "Sem nome";
   document.querySelector("#resultRiot").textContent = player.riotId || "Riot ID não informado";
   document.querySelector("#avatar").textContent = (player.nickname || "?").trim().charAt(0).toUpperCase();
-  document.querySelector("#freezeIndex").textContent = playerScore;
-  document.querySelector("#resultLol").textContent = player.lolCurrent;
+  document.querySelector("#resultLol").textContent = formatRank(player.lolCurrent, player.lolCurrentLp);
   document.querySelector("#resultVal").textContent = player.valCurrent;
-  document.querySelector("#resultGc").textContent = player.gcLevel;
-  document.querySelector("#peakPercent").textContent = `${peakPercent}%`;
+  document.querySelector("#resultGc").textContent = `Nível ${player.gcLevel}`;
   document.querySelector("#currentPercent").textContent = `${currentPercent}%`;
-  document.querySelector("#peakBar").style.width = `${Math.min(peakPercent, 100)}%`;
+  document.querySelector("#peakPercent").textContent = `${peakPercent}%`;
   document.querySelector("#currentBar").style.width = `${Math.min(currentPercent, 100)}%`;
-  document.querySelector("#peakCopy").textContent = comparisonCopy(peakPercent, "peak");
+  document.querySelector("#peakBar").style.width = `${Math.min(peakPercent, 100)}%`;
+  document.querySelector("#playerCurrentCaption").textContent = formatRank(player.lolCurrent, player.lolCurrentLp);
+  document.querySelector("#playerPeakCaption").textContent = formatRank(player.lolPeak, player.lolPeakLp);
   document.querySelector("#currentCopy").textContent = comparisonCopy(currentPercent, "current");
-  document.querySelector("#verdict p").innerHTML = verdictFor(playerScore, currentPercent);
+  document.querySelector("#peakCopy").textContent = comparisonCopy(peakPercent, "peak");
+  document.querySelector("#verdict").textContent = verdict(currentPercent, peakPercent);
+
+  const status = document.querySelector("#overallStatus");
+  status.textContent = above ? "Na referência ou acima" : "Abaixo da referência";
+  status.classList.toggle("above", above);
 }
 
-function hydrateForms() {
-  const { player, owner } = state;
+function hydrate() {
   fillSelect(document.querySelector("#lolCurrent"), lolRanks, player.lolCurrent);
   fillSelect(document.querySelector("#lolPeak"), lolRanks, player.lolPeak);
   fillSelect(document.querySelector("#valCurrent"), valRanks, player.valCurrent);
   fillSelect(document.querySelector("#valPeak"), valRanks, player.valPeak);
-  fillSelect(document.querySelector("#ownerLolCurrent"), lolRanks, owner.lolCurrent);
-  fillSelect(document.querySelector("#ownerLolPeak"), lolRanks, owner.lolPeak);
-  fillSelect(document.querySelector("#ownerValCurrent"), valRanks, owner.valCurrent);
-  fillSelect(document.querySelector("#ownerValPeak"), valRanks, owner.valPeak);
-
   document.querySelector("#nickname").value = player.nickname;
   document.querySelector("#riotId").value = player.riotId;
+  document.querySelector("#lolCurrentLp").value = player.lolCurrentLp;
+  document.querySelector("#lolPeakLp").value = player.lolPeakLp;
   document.querySelector("#gcLevel").value = player.gcLevel;
   document.querySelector("#gcOutput").value = player.gcLevel;
-  document.querySelector("#ownerGcCurrent").value = owner.gcCurrent;
-  document.querySelector("#ownerGcPeak").value = owner.gcPeak;
-}
-
-function save() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
 
 let toastTimer;
@@ -150,7 +140,7 @@ function showToast(message) {
   toast.textContent = message;
   toast.classList.add("show");
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => toast.classList.remove("show"), 2500);
+  toastTimer = setTimeout(() => toast.classList.remove("show"), 2300);
 }
 
 const gcLevel = document.querySelector("#gcLevel");
@@ -160,40 +150,22 @@ gcLevel.addEventListener("input", () => {
 
 document.querySelector("#playerForm").addEventListener("submit", (event) => {
   event.preventDefault();
-  state.player = {
+  player = {
     nickname: document.querySelector("#nickname").value.trim(),
     riotId: document.querySelector("#riotId").value.trim(),
     lolCurrent: document.querySelector("#lolCurrent").value,
+    lolCurrentLp: Number(document.querySelector("#lolCurrentLp").value),
     lolPeak: document.querySelector("#lolPeak").value,
+    lolPeakLp: Number(document.querySelector("#lolPeakLp").value),
     valCurrent: document.querySelector("#valCurrent").value,
     valPeak: document.querySelector("#valPeak").value,
     gcLevel: Number(gcLevel.value)
   };
-  save();
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(player));
   render();
-  showToast("Laudo atualizado e salvo neste navegador.");
+  showToast("Comparação atualizada e salva neste navegador.");
   document.querySelector(".result-panel").scrollIntoView({ behavior: "smooth", block: "center" });
 });
 
-const dialog = document.querySelector("#settingsDialog");
-document.querySelector("#openSettings").addEventListener("click", () => dialog.showModal());
-document.querySelector("#cancelSettings").addEventListener("click", () => dialog.close());
-
-document.querySelector("#settingsForm").addEventListener("submit", (event) => {
-  event.preventDefault();
-  state.owner = {
-    lolCurrent: document.querySelector("#ownerLolCurrent").value,
-    valCurrent: document.querySelector("#ownerValCurrent").value,
-    gcCurrent: Number(document.querySelector("#ownerGcCurrent").value),
-    lolPeak: document.querySelector("#ownerLolPeak").value,
-    valPeak: document.querySelector("#ownerValPeak").value,
-    gcPeak: Number(document.querySelector("#ownerGcPeak").value)
-  };
-  save();
-  render();
-  dialog.close();
-  showToast("Sua régua foi atualizada.");
-});
-
-hydrateForms();
+hydrate();
 render();

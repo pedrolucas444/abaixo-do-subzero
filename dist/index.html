@@ -3,284 +3,260 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#050b18" />
-    <meta
-      name="description"
-      content="Compare elos de LoL, VALORANT e Gamers Club numa régua gelada e bem-humorada."
-    />
+    <meta name="theme-color" content="#0a0a0b" />
+    <meta name="description" content="Compare seu elo com o Subzero, no auge e hoje." />
     <title>Abaixo do Subzero</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23d8ff37'/%3E%3Cpath d='M18 43 29 17h8l10 26h-8l-2-6H27l-2 6h-7Zm11-12h6l-3-9-3 9Z' fill='%230a0a0b'/%3E%3C/svg%3E" />
     <link rel="stylesheet" href="./styles.css" />
     <script src="./app.js" defer></script>
   </head>
   <body>
-    <div class="noise" aria-hidden="true"></div>
+    <div class="grid-bg" aria-hidden="true"></div>
+
     <header class="site-header">
       <a class="brand" href="#topo" aria-label="Abaixo do Subzero — início">
-        <span class="brand-mark" aria-hidden="true">✦</span>
+        <span class="brand-mark">AS</span>
         <span>Abaixo do <strong>Subzero</strong></span>
       </a>
-      <button class="ghost-button compact" id="openSettings" type="button">
-        Ajustar minha régua
-      </button>
+      <a class="header-link" href="#comparador">Fazer comparação</a>
     </header>
 
     <main id="topo">
-      <section class="hero" aria-labelledby="heroTitle">
+      <section class="hero">
         <div class="hero-copy">
-          <p class="eyebrow">Termômetro competitivo não-oficial</p>
-          <h1 id="heroTitle">Descubra o quanto ainda falta para <em>descongelar.</em></h1>
+          <p class="eyebrow">Comparador de elo</p>
+          <h1>Você está no nível do <span>Subzero?</span></h1>
           <p class="hero-text">
-            Junte LoL, VALORANT e Gamers Club numa régua só. A ciência é duvidosa;
-            a zoeira, extremamente precisa.
+            Coloque seus dados e descubra a distância entre você e o meu elo no LoL —
+            tanto no auge quanto na temporada atual.
           </p>
-          <a class="primary-button" href="#laboratorio">Medir a temperatura</a>
+          <a class="primary-button" href="#comparador">Comparar meu perfil</a>
         </div>
 
-        <div class="hero-visual" aria-label="Ilustração de um jogador congelado em uma esfera de gelo">
-          <div class="orbit orbit-one"></div>
-          <div class="orbit orbit-two"></div>
-          <div class="ice-orb">
-            <span class="orb-spark spark-one">✦</span>
-            <span class="orb-spark spark-two">✦</span>
-            <div class="helmet">
-              <span class="visor"></span>
-              <span class="headset left"></span>
-              <span class="headset right"></span>
-            </div>
-            <span class="temperature">−18°C</span>
+        <aside class="reference-card" aria-labelledby="referenceTitle">
+          <div class="reference-topline">
+            <span>Conta de referência</span>
+            <span class="live-badge">Snapshot público</span>
           </div>
-          <span class="floating-tag tag-lol">LOL</span>
-          <span class="floating-tag tag-val">VAL</span>
-          <span class="floating-tag tag-gc">GC</span>
-        </div>
+          <div class="reference-profile">
+            <div class="monogram">F</div>
+            <div>
+              <h2 id="referenceTitle">fr0sty<span>#BR4</span></h2>
+              <p>Servidor BR · Nível 775</p>
+            </div>
+          </div>
+          <div class="reference-stats">
+            <div>
+              <small>Elo atual</small>
+              <strong>Diamante I</strong>
+              <span>75 LP</span>
+            </div>
+            <div>
+              <small>Maior elo</small>
+              <strong>Mestre</strong>
+              <span>217 LP</span>
+            </div>
+          </div>
+          <div class="reference-meta">
+            <span>Top 1,15% no BR</span>
+            <a href="https://www.leagueofgraphs.com/pt/summoner/br/fr0sty-BR4" target="_blank" rel="noreferrer">Ver perfil público</a>
+          </div>
+        </aside>
       </section>
 
-      <section class="lab" id="laboratorio" aria-labelledby="labTitle">
+      <section class="benchmark-strip" aria-label="Resumo da metodologia">
+        <p><strong>Base da régua:</strong> LoL Solo/Duo</p>
+        <p><strong>Referência atual:</strong> Diamante I · 75 LP</p>
+        <p><strong>Referência máxima:</strong> Mestre · 217 LP</p>
+      </section>
+
+      <section class="compare-section" id="comparador" aria-labelledby="compareTitle">
         <div class="section-heading">
           <div>
-            <p class="eyebrow">Laboratório criogênico</p>
-            <h2 id="labTitle">Coloque o desafiante na máquina.</h2>
+            <p class="eyebrow">Perfil do desafiante</p>
+            <h2 id="compareTitle">Monte a comparação.</h2>
           </div>
-          <span class="status-pill"><i></i> Protótipo local</span>
+          <p>Os dados ficam salvos somente neste navegador.</p>
         </div>
 
-        <div class="lab-grid">
+        <div class="compare-grid">
           <form class="panel input-panel" id="playerForm">
-            <div class="panel-title">
-              <span class="step">01</span>
+            <div class="panel-heading">
               <div>
-                <h3>Dados do desafiante</h3>
-                <p>Por enquanto, os elos são preenchidos manualmente.</p>
+                <span class="panel-label">Dados do jogador</span>
+                <h3>Quem vai entrar na régua?</h3>
               </div>
+              <span class="step-badge">01</span>
             </div>
 
-            <label class="field full-field">
-              <span>Nome da vítima</span>
-              <input id="nickname" name="nickname" maxlength="28" placeholder="ex.: Frostzera" required />
-            </label>
-
-            <label class="field full-field">
-              <span>Riot ID</span>
-              <input id="riotId" name="riotId" maxlength="40" placeholder="Jogador#BR1" required />
-              <small>A integração oficial da Riot entra na próxima etapa.</small>
-            </label>
-
-            <div class="game-block">
-              <div class="game-heading">
-                <span class="game-icon lol-icon">L</span>
-                <strong>League of Legends</strong>
-              </div>
-              <div class="field-row">
-                <label class="field">
-                  <span>Elo atual</span>
-                  <select id="lolCurrent" name="lolCurrent"></select>
-                </label>
-                <label class="field">
-                  <span>Maior elo</span>
-                  <select id="lolPeak" name="lolPeak"></select>
-                </label>
-              </div>
-            </div>
-
-            <div class="game-block">
-              <div class="game-heading">
-                <span class="game-icon val-icon">V</span>
-                <strong>VALORANT</strong>
-              </div>
-              <div class="field-row">
-                <label class="field">
-                  <span>Elo atual</span>
-                  <select id="valCurrent" name="valCurrent"></select>
-                </label>
-                <label class="field">
-                  <span>Maior elo</span>
-                  <select id="valPeak" name="valPeak"></select>
-                </label>
-              </div>
-            </div>
-
-            <div class="game-block gc-block">
-              <div class="game-heading">
-                <span class="game-icon gc-icon">GC</span>
-                <strong>Gamers Club</strong>
-              </div>
+            <div class="field-row">
               <label class="field">
-                <span>Nível atual na GC</span>
-                <div class="range-wrap">
-                  <input id="gcLevel" name="gcLevel" type="range" min="1" max="20" value="10" />
-                  <output id="gcOutput" for="gcLevel">10</output>
-                </div>
+                <span>Nome</span>
+                <input id="nickname" name="nickname" maxlength="28" placeholder="Nome do jogador" required />
+              </label>
+              <label class="field">
+                <span>Riot ID</span>
+                <input id="riotId" name="riotId" maxlength="40" placeholder="Jogador#BR1" required />
               </label>
             </div>
 
-            <button class="primary-button submit-button" type="submit">Calcular nível de congelamento</button>
+            <div class="game-section primary-game">
+              <div class="game-title">
+                <span class="game-logo lol-logo">L</span>
+                <div>
+                  <strong>League of Legends</strong>
+                  <small>Este jogo define as duas barras de comparação</small>
+                </div>
+              </div>
+
+              <div class="rank-grid">
+                <div class="rank-group">
+                  <span class="rank-label">Elo atual</span>
+                  <label class="field">
+                    <span>Divisão</span>
+                    <select id="lolCurrent" name="lolCurrent"></select>
+                  </label>
+                  <label class="field">
+                    <span>LP</span>
+                    <input id="lolCurrentLp" name="lolCurrentLp" type="number" min="0" max="3000" inputmode="numeric" />
+                  </label>
+                </div>
+                <div class="rank-group">
+                  <span class="rank-label">Maior elo</span>
+                  <label class="field">
+                    <span>Divisão</span>
+                    <select id="lolPeak" name="lolPeak"></select>
+                  </label>
+                  <label class="field">
+                    <span>LP</span>
+                    <input id="lolPeakLp" name="lolPeakLp" type="number" min="0" max="3000" inputmode="numeric" />
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="secondary-games">
+              <div class="game-section compact-game">
+                <div class="game-title">
+                  <span class="game-logo val-logo">V</span>
+                  <div><strong>VALORANT</strong><small>Informação de perfil</small></div>
+                </div>
+                <div class="field-row">
+                  <label class="field"><span>Elo atual</span><select id="valCurrent"></select></label>
+                  <label class="field"><span>Maior elo</span><select id="valPeak"></select></label>
+                </div>
+              </div>
+
+              <div class="game-section compact-game">
+                <div class="game-title">
+                  <span class="game-logo gc-logo">GC</span>
+                  <div><strong>Gamers Club</strong><small>Preenchimento manual</small></div>
+                </div>
+                <label class="field">
+                  <span>Nível atual</span>
+                  <div class="range-wrap">
+                    <input id="gcLevel" type="range" min="1" max="20" value="10" />
+                    <output id="gcOutput" for="gcLevel">10</output>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <button class="primary-button submit-button" type="submit">Comparar com o Subzero</button>
+            <p class="form-note">Nesta versão, os elos são informados manualmente. A integração Riot entra depois.</p>
           </form>
 
           <article class="panel result-panel" aria-live="polite">
-            <div class="panel-title">
-              <span class="step">02</span>
+            <div class="panel-heading">
               <div>
-                <h3>Laudo do congelador</h3>
-                <p>Comparação salva somente neste navegador.</p>
+                <span class="panel-label">Resultado</span>
+                <h3>Placar comparativo</h3>
               </div>
+              <span class="step-badge">02</span>
             </div>
 
-            <div class="profile-card">
-              <div class="avatar" id="avatar" aria-hidden="true">F</div>
-              <div class="profile-copy">
-                <span class="micro-label">Paciente</span>
-                <h3 id="resultName">Frostzera</h3>
+            <div class="player-summary">
+              <div class="player-avatar" id="avatar">R</div>
+              <div>
+                <small>Desafiante</small>
+                <h3 id="resultName">Rival</h3>
                 <p id="resultRiot">Jogador#BR1</p>
               </div>
-              <div class="freeze-index">
-                <span class="micro-label">Índice</span>
-                <strong id="freezeIndex">58</strong>
-                <small>/ 100</small>
-              </div>
+              <span class="score-chip" id="overallStatus">Abaixo da referência</span>
             </div>
 
-            <div class="rank-strip">
-              <div>
-                <span class="game-icon lol-icon">L</span>
-                <p><small>LoL agora</small><strong id="resultLol">Ouro II</strong></p>
-              </div>
-              <div>
-                <span class="game-icon val-icon">V</span>
-                <p><small>VAL agora</small><strong id="resultVal">Prata 3</strong></p>
-              </div>
-              <div>
-                <span class="game-icon gc-icon">GC</span>
-                <p><small>Nível GC</small><strong id="resultGc">10</strong></p>
-              </div>
+            <div class="profile-ranks">
+              <div><span class="game-logo lol-logo">L</span><p><small>LoL</small><strong id="resultLol">Ouro II · 40 LP</strong></p></div>
+              <div><span class="game-logo val-logo">V</span><p><small>VALORANT</small><strong id="resultVal">Prata 3</strong></p></div>
+              <div><span class="game-logo gc-logo">GC</span><p><small>Gamers Club</small><strong id="resultGc">Nível 10</strong></p></div>
             </div>
 
             <div class="comparison-list">
-              <div class="comparison">
-                <div class="comparison-heading">
+              <section class="comparison-item">
+                <div class="comparison-title">
                   <div>
-                    <span class="comparison-kicker">Contra o chefão</span>
-                    <h4>Você no auge</h4>
+                    <span>Comparação atual</span>
+                    <h4>Você hoje <i>vs.</i> fr0sty hoje</h4>
                   </div>
-                  <strong id="peakPercent">61%</strong>
+                  <strong id="currentPercent">58%</strong>
                 </div>
-                <div class="progress-track" aria-hidden="true">
-                  <span class="progress-fill peak-fill" id="peakBar"></span>
-                  <i class="benchmark-mark"></i>
+                <div class="bar-track">
+                  <span class="bar-fill current-bar" id="currentBar"></span>
+                  <i class="target-marker"><b>fr0sty</b></i>
                 </div>
-                <p id="peakCopy">Ainda faltam alguns graus para encostar no seu melhor momento.</p>
-              </div>
+                <div class="bar-caption">
+                  <span id="playerCurrentCaption">Ouro II · 40 LP</span>
+                  <span>Diamante I · 75 LP</span>
+                </div>
+                <p id="currentCopy">Você está a 42% da referência atual.</p>
+              </section>
 
-              <div class="comparison">
-                <div class="comparison-heading">
+              <section class="comparison-item">
+                <div class="comparison-title">
                   <div>
-                    <span class="comparison-kicker">Contra a versão atual</span>
-                    <h4>Você hoje</h4>
+                    <span>Comparação histórica</span>
+                    <h4>Seu auge <i>vs.</i> auge do fr0sty</h4>
                   </div>
-                  <strong id="currentPercent">85%</strong>
+                  <strong id="peakPercent">64%</strong>
                 </div>
-                <div class="progress-track" aria-hidden="true">
-                  <span class="progress-fill current-fill" id="currentBar"></span>
-                  <i class="benchmark-mark"></i>
+                <div class="bar-track">
+                  <span class="bar-fill peak-bar" id="peakBar"></span>
+                  <i class="target-marker"><b>fr0sty</b></i>
                 </div>
-                <p id="currentCopy">Já dá para sentir o frio na nuca. A distância ficou curta.</p>
-              </div>
+                <div class="bar-caption">
+                  <span id="playerPeakCaption">Platina III · 20 LP</span>
+                  <span>Mestre · 217 LP</span>
+                </div>
+                <p id="peakCopy">Seu melhor momento chegou a 64% do pico do fr0sty.</p>
+              </section>
             </div>
 
-            <div class="verdict" id="verdict">
-              <span>Diagnóstico</span>
-              <p>Promissor, mas ainda oficialmente <strong>abaixo do subzero.</strong></p>
+            <div class="verdict-card">
+              <span>Leitura rápida</span>
+              <p id="verdict">Ainda abaixo da referência. A régua continua com o Subzero.</p>
             </div>
           </article>
         </div>
       </section>
 
-      <section class="how-it-works" aria-labelledby="howTitle">
-        <div class="section-heading">
-          <div>
-            <p class="eyebrow">Sem magia negra</p>
-            <h2 id="howTitle">Como a régua funciona.</h2>
-          </div>
+      <section class="method-section" aria-labelledby="methodTitle">
+        <div class="method-copy">
+          <p class="eyebrow">Como é calculado</p>
+          <h2 id="methodTitle">Uma régua direta, sem mistério.</h2>
         </div>
-        <div class="explain-grid">
-          <article>
-            <span>Riot</span>
-            <h3>LoL + VALORANT</h3>
-            <p>O protótipo usa seleção manual. A versão conectada trocará isso por dados oficiais autorizados.</p>
-          </article>
-          <article>
-            <span>GC</span>
-            <h3>Nível declarado</h3>
-            <p>O nível da Gamers Club fica manual, simples e sem depender de integrações frágeis.</p>
-          </article>
-          <article>
-            <span>Local</span>
-            <h3>Sem banco de dados</h3>
-            <p>Perfil, régua e último resultado são armazenados só no navegador com localStorage.</p>
-          </article>
+        <div class="method-grid">
+          <article><span>01</span><h3>Elo atual</h3><p>Seu rank e LP atuais são comparados com Diamante I, 75 LP.</p></article>
+          <article><span>02</span><h3>Maior elo</h3><p>Seu melhor rank e LP são comparados com Mestre, 217 LP.</p></article>
+          <article><span>03</span><h3>Outros jogos</h3><p>VALORANT e GC aparecem no perfil, mas não distorcem a régua de LoL.</p></article>
         </div>
       </section>
     </main>
 
     <footer>
-      <span>Abaixo do Subzero</span>
-      <p>Feito para a zoeira. Não afiliado à Riot Games ou à Gamers Club.</p>
+      <div><span class="brand-mark small">AS</span><strong>Abaixo do Subzero</strong></div>
+      <p>Projeto de brincadeira · Não afiliado à Riot Games ou à Gamers Club.</p>
     </footer>
 
-    <dialog id="settingsDialog">
-      <form method="dialog" class="settings-card" id="settingsForm">
-        <div class="dialog-heading">
-          <div>
-            <p class="eyebrow">Régua do dono</p>
-            <h2>Defina o seu nível.</h2>
-          </div>
-          <button class="icon-button" value="cancel" aria-label="Fechar configurações">×</button>
-        </div>
-        <p class="dialog-intro">Esses dados viram a referência das duas barras de comparação.</p>
-
-        <div class="settings-section">
-          <h3>Você hoje</h3>
-          <div class="settings-grid">
-            <label class="field"><span>LoL</span><select id="ownerLolCurrent"></select></label>
-            <label class="field"><span>VALORANT</span><select id="ownerValCurrent"></select></label>
-            <label class="field"><span>GC</span><input id="ownerGcCurrent" type="number" min="1" max="20" /></label>
-          </div>
-        </div>
-        <div class="settings-section">
-          <h3>Você no auge</h3>
-          <div class="settings-grid">
-            <label class="field"><span>LoL</span><select id="ownerLolPeak"></select></label>
-            <label class="field"><span>VALORANT</span><select id="ownerValPeak"></select></label>
-            <label class="field"><span>GC</span><input id="ownerGcPeak" type="number" min="1" max="20" /></label>
-          </div>
-        </div>
-
-        <div class="dialog-actions">
-          <button class="ghost-button" value="cancel" type="button" id="cancelSettings">Cancelar</button>
-          <button class="primary-button" value="default" type="submit">Salvar minha régua</button>
-        </div>
-      </form>
-    </dialog>
-
-    <div class="toast" id="toast" role="status" aria-live="polite">Resultado salvo neste navegador.</div>
+    <div class="toast" id="toast" role="status" aria-live="polite">Comparação salva.</div>
   </body>
 </html>
